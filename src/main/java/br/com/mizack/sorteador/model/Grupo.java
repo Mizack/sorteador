@@ -24,6 +24,9 @@ public class Grupo {
 	
 	@Column(name = "VALOR_SUGERIDO")
     private double valorSugerido;
+
+	@Column(name = "TOKEN")
+    private String token;
 	
     public int getCodigo() {
         return codigo;
@@ -55,5 +58,13 @@ public class Grupo {
 
     public void setValorSugerido(double valorSugerido) {
         this.valorSugerido = valorSugerido;
+    }
+    
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

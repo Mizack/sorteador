@@ -21,6 +21,9 @@ public class Participante {
 	@Column(name = "EMAIL")
     private String email;
 	
+	@Column(name = "CODIGO_GRUPO")
+    private int codigoGrupo;
+	
 	public int getCodigo() {
         return codigo;
     }
@@ -43,5 +46,13 @@ public class Participante {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+    
+    public int getCodigoGrupo() {
+        return codigoGrupo;
+    }
+
+    public void setCodigoGrupo(int codigo) {
+        this.codigoGrupo = codigo;
     }
 }
