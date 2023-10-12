@@ -6,6 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
+
+import java.security.SecureRandom;
 import java.time.LocalDate;
 
 @Entity
@@ -16,16 +19,16 @@ public class Grupo {
     @Column(name = "CODIGO_GRUPO")
     private int codigo;
 	
-	@Column(name = "NOME")
+	@Column(name = "NOME", nullable = false, length = 50)
     private String nome;
 	
 	@Column(name = "DATA")
-    private LocalDate dataFabricacao;
+    private LocalDate data;
 	
 	@Column(name = "VALOR_SUGERIDO")
     private double valorSugerido;
 
-	@Column(name = "TOKEN")
+	@Column(name = "TOKEN", nullable = false, length = 75)
     private String token;
 	
     public int getCodigo() {
@@ -44,12 +47,12 @@ public class Grupo {
         this.nome = nome;
     }
 
-    public LocalDate getDataFabricacao() {
-        return dataFabricacao;
+    public LocalDate getData() {
+        return data;
     }
 
-    public void setDataFabricacao(LocalDate dataFabricacao) {
-        this.dataFabricacao = dataFabricacao;
+    public void setData(LocalDate data) {
+        this.data = data;
     }
 
     public double getValorSugerido() {
@@ -66,5 +69,17 @@ public class Grupo {
 
     public void setToken(String token) {
         this.token = token;
+    }
+    
+    public String gerarToken() {
+    	String escolhasPossiveis = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    	SecureRandom random = new SecureRandom();
+    	String result = "";
+    	for (int i = 0; i < 75; i++) {
+            int randomIndex = random.nextInt(escolhasPossiveis.length());
+            char randomChar = escolhasPossiveis.charAt(randomIndex);
+            result += randomChar;
+        }
+    	return result;
     }
 }

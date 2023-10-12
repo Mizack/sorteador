@@ -1,11 +1,14 @@
 package br.com.mizack.sorteador.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+
 
 @Entity
 @Table(name = "PARTICIPANTE")
@@ -15,14 +18,15 @@ public class Participante {
     @Column(name = "CODIGO_PARTICIPANTE")
     private int codigo;
 	
-	@Column(name = "NOME")
+	@Column(name = "NOME", nullable = false, length = 100)
     private String nome;
 	
-	@Column(name = "EMAIL")
+	@Column(name = "EMAIL", nullable = false, length = 100)
     private String email;
 	
-	@Column(name = "CODIGO_GRUPO")
-    private int codigoGrupo;
+	@ManyToOne
+	@JoinColumn(name = "CODIGO_GRUPO", referencedColumnName = "CODIGO_GRUPO", nullable = false)
+    private Grupo codigoGrupo;
 	
 	public int getCodigo() {
         return codigo;
@@ -48,11 +52,11 @@ public class Participante {
         this.email = email;
     }
     
-    public int getCodigoGrupo() {
+    public Grupo getCodigoGrupo() {
         return codigoGrupo;
     }
 
-    public void setCodigoGrupo(int codigo) {
+    public void setCodigoGrupo(Grupo codigo) {
         this.codigoGrupo = codigo;
     }
 }
