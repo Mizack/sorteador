@@ -5,6 +5,7 @@ import br.com.mizack.sorteador.model.Grupo;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,9 +40,17 @@ public class GrupoResource {
 		return grupoRepository.save(grupo);
 	}
 	
-	@PostMapping("{TOKEN}")
-	public void sortear(@RequestBody Grupo grupo, @PathVariable String token) {
-		grupo.setToken(token);
+	@PostMapping("/sortear")
+	public void sortear(@RequestBody Map<String, Object> jsonRequest) {
+		List<Object[]> listaParticipantes;
+		List<Grupo> detalhamentoDoGrupo;
+		Grupo grupo = new Grupo();
+		
+		grupo.setToken(jsonRequest.get("token").toString());
+		detalhamentoDoGrupo = grupoRepository.findByToken(grupo.getToken());
+		listaParticipantes = grupoRepository.findByGrupo(detalhamentoDoGrupo.get(0));
+		
+		grupo.sortear(listaParticipantes);
 	}
 	
 	@DeleteMapping("{TOKEN}")
@@ -57,4 +66,12 @@ public class GrupoResource {
 	    return grupoRepository.findByToken(grupo.getToken());
 	}
 	
+	@GetMapping("/listarUsuarios")
+	public List<Object[]> listarUsuarios(@RequestParam String token) {
+		List<Grupo> detalhamentoDoGrupo;
+		Grupo grupo = new Grupo();
+		grupo.setToken(token);
+		detalhamentoDoGrupo = grupoRepository.findByToken(grupo.getToken());
+		return grupoRepository.findByGrupo(detalhamentoDoGrupo.get(0));
+	}
 }

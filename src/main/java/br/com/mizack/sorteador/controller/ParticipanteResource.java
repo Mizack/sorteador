@@ -78,10 +78,4 @@ public class ParticipanteResource {
 		
 	}
 	
-	//@GetMapping("/listarUsuarios")
-	//public List<Object[]> listarUsuarios(@RequestParam String token) {
-		//Grupo grupo = new Grupo();
-		//grupo.setToken(token);
-		//return participanteRepository.listarUsers(token);
-	//}
 }
