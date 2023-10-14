@@ -6,10 +6,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,8 +56,16 @@ public class ParticipanteResource {
 	}
 	
 	@PutMapping
-	public void atualizar(@RequestBody Participante participante) {
+	public void atualizar(@RequestBody Map<String, Object> jsonRequest) {
+		String token = jsonRequest.get("token").toString();
+		Participante participante = new Participante();
+		List<Grupo> gruposDetalhados;
+		Grupo grupo = new Grupo();
 		
+		participante.setEmail(jsonRequest.get("email").toString());
+		participante.setNome(jsonRequest.get("nome").toString());
+		grupo.setToken(token);
+		gruposDetalhados = grupoRepository.findByToken(grupo.getToken());
 	}
 
 	@DeleteMapping
@@ -66,4 +77,11 @@ public class ParticipanteResource {
 	public void reenviarEmail(@RequestBody Participante participante) {
 		
 	}
+	
+	//@GetMapping("/listarUsuarios")
+	//public List<Object[]> listarUsuarios(@RequestParam String token) {
+		//Grupo grupo = new Grupo();
+		//grupo.setToken(token);
+		//return participanteRepository.listarUsers(token);
+	//}
 }

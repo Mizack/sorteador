@@ -47,6 +47,7 @@ public class GrupoResource {
 	@DeleteMapping("{TOKEN}")
 	public void deletar(@RequestBody Grupo grupo, @PathVariable String token) {
 		grupo.setToken(token);
+		grupoRepository.deleteByToken(grupo.getToken());
 	}
 	
 	@GetMapping("/detalhar")
@@ -56,8 +57,4 @@ public class GrupoResource {
 	    return grupoRepository.findByToken(grupo.getToken());
 	}
 	
-	@GetMapping("/listarUsuarios")
-	public void listarUsuarios(@RequestBody Grupo grupo, @PathVariable String token) {
-		grupo.setToken(token);
-	}
 }
