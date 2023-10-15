@@ -28,6 +28,24 @@ public class Participante {
 	@JoinColumn(name = "CODIGO_GRUPO", referencedColumnName = "CODIGO_GRUPO", nullable = false)
     private Grupo codigoGrupo;
 	
+	@Column(name = "PRIMEIRA_OPCAO", length = 500)
+	private String primeiraOpcao;
+	
+	@Column(name = "SEGUNDA_OPCAO", length = 500)
+	private String segundaOpcao;
+	
+	@Column(name = "TERCEIRA_OPCAO", length = 500)
+	private String terceiraOpcao;
+	
+	@Column(name = "AMIGO_SORTEADO")
+    private int codigoAmigoSorteado;
+	
+	public void main() {
+		primeiraOpcao = null;
+		segundaOpcao = null;
+		terceiraOpcao = null;
+	}
+	
 	public int getCodigo() {
         return codigo;
     }
@@ -58,5 +76,37 @@ public class Participante {
 
     public void setCodigoGrupo(Grupo codigo) {
         this.codigoGrupo = codigo;
+    }
+    
+    public String getPrimeiraOpcao() {
+    	return primeiraOpcao;
+    }
+
+    public void setPrimeiraOpcao(String primeiraOpcao) {
+    	this.primeiraOpcao = primeiraOpcao;
+    }
+
+    public String getSegundaOpcao() {
+    	return segundaOpcao;
+    }
+
+    public void setSegundaOpcao(String segundaOpcao) {
+    	this.segundaOpcao = segundaOpcao;
+    }
+
+    public String getTerceiraOpcao() {
+    	return terceiraOpcao;
+    }
+
+    public void setTerceiraOpcao(String terceiraOpcao) {
+    	this.terceiraOpcao = terceiraOpcao;
+    }
+    
+	public int getAmigoSorteado() {
+        return codigoAmigoSorteado;
+    }
+
+    public void setAmigoSorteado(int codigo) {
+        this.codigoAmigoSorteado = codigo;
     }
 }

@@ -2,6 +2,8 @@ package br.com.mizack.sorteador.controller;
 
 import br.com.mizack.sorteador.repository.GrupoRepository;
 import br.com.mizack.sorteador.model.Grupo;
+import br.com.mizack.sorteador.model.Participante;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -9,7 +11,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,28 +35,28 @@ public class GrupoResource {
 		return grupoRepository.save(grupo);
 	}
 	
-	@PutMapping("{TOKEN}")
-	public Grupo atualizar(@RequestBody Grupo grupo, @PathVariable String token) {
-		grupo.setToken(token);
+	@PutMapping
+	public Grupo atualizar(@RequestBody Grupo grupo) {
+		List<Grupo> grupoDetalhado = grupoRepository.findByToken(grupo.getToken());
+		grupo.setCodigo(grupoDetalhado.get(0).getCodigo());
 		return grupoRepository.save(grupo);
 	}
 	
 	@PostMapping("/sortear")
-	public void sortear(@RequestBody Map<String, Object> jsonRequest) {
-		List<Object[]> listaParticipantes;
+	public void sortear(@RequestBody Map<String, Object> jsonRequest) throws InterruptedException {
+		List<Participante> listaParticipantes;
 		List<Grupo> detalhamentoDoGrupo;
 		Grupo grupo = new Grupo();
 		
 		grupo.setToken(jsonRequest.get("token").toString());
 		detalhamentoDoGrupo = grupoRepository.findByToken(grupo.getToken());
-		listaParticipantes = grupoRepository.findByGrupo(detalhamentoDoGrupo.get(0));
+		listaParticipantes = grupoRepository.findByGrupoAll(detalhamentoDoGrupo.get(0));
 		
 		grupo.sortear(listaParticipantes);
 	}
 	
-	@DeleteMapping("{TOKEN}")
-	public void deletar(@RequestBody Grupo grupo, @PathVariable String token) {
-		grupo.setToken(token);
+	@DeleteMapping
+	public void deletar(@RequestBody Grupo grupo) {
 		grupoRepository.deleteByToken(grupo.getToken());
 	}
 	
@@ -74,4 +75,5 @@ public class GrupoResource {
 		detalhamentoDoGrupo = grupoRepository.findByToken(grupo.getToken());
 		return grupoRepository.findByGrupo(detalhamentoDoGrupo.get(0));
 	}
+	
 }

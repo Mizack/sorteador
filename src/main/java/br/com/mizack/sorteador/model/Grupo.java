@@ -11,6 +11,10 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import br.com.mizack.sorteador.repository.ParticipanteRepository;
+import br.com.mizack.sorteador.utils.EmailSender;
 
 @Entity
 @Table(name = "GRUPO")
@@ -69,24 +73,30 @@ public class Grupo {
     }
 
     public void setToken(String token) {
+    	token = token.replaceAll("[^a-zA-Z0-9]", "").replace(" ", "");
+    	if (token == null || token.length() != 75) {
+            token = null;
+        }
         this.token = token;
     }
+    
+    private ParticipanteRepository participanteRepository;
 
-    public void sortear(List<Object[]> listaParticipantes) {
-        List<Object[]> listaParticipantesRecebedores = new ArrayList<>(listaParticipantes);
+    public void sortear(List<Participante> listaParticipantes) throws InterruptedException {
+        List<Participante> listaParticipantesRecebedores = new ArrayList<>(listaParticipantes);
         SecureRandom random = new SecureRandom();
-        Object[] participanteRecebedor = null;
+        Participante participanteRecebedor = null;
+        EmailSender email = new EmailSender();
         Integer indiceParticipanteAtual = 0;
         Boolean controle = false;
 
-        System.out.println("\n\n\nParticipante\t\t\tAmigo Secreto");
-        for (Object[] participante : listaParticipantes) {
+        for (Participante participante : listaParticipantes) {
             controle = false;
             while (!controle) {
                 int randomIndex = random.nextInt(listaParticipantesRecebedores.size());
                 participanteRecebedor = listaParticipantesRecebedores.get(randomIndex);
 
-                if (!participante[1].equals(participanteRecebedor[1]) && (listaParticipantesRecebedores.size() != 2
+                if (!participante.getEmail().equals(participanteRecebedor.getEmail()) && (listaParticipantesRecebedores.size() != 2
                         || listaParticipantesRecebedores.size() == 2 && this.validarSeOProximoUsuarioFicaraSozinho(
                                 listaParticipantes, listaParticipantesRecebedores, indiceParticipanteAtual,
                                 randomIndex))) {
@@ -94,21 +104,26 @@ public class Grupo {
                     controle = true;
                 }
             }
-
+            
+            if (email.enviarEmailSorteio(participante, participanteRecebedor)) {
+            	participante.setAmigoSorteado(participanteRecebedor.getCodigo());
+            	participanteRepository.save(participante);
+            }
+            
+            TimeUnit.SECONDS.sleep(2);
             indiceParticipanteAtual++;
-            System.out.println(participante[1] + "\t\t\t" + participanteRecebedor[1]);
         }
     }
 
-    private Boolean validarSeOProximoUsuarioFicaraSozinho(List<Object[]> listaParticipantes,
-            List<Object[]> listaParticipantesRecebedores, Integer indiceParticipanteAtual, Integer indiceSorteado) {
-        String proximoParticipante = listaParticipantes.get(indiceParticipanteAtual + 1)[1].toString();
+    private Boolean validarSeOProximoUsuarioFicaraSozinho(List<Participante> listaParticipantes,
+            List<Participante> listaParticipantesRecebedores, Integer indiceParticipanteAtual, Integer indiceSorteado) {
+        String proximoParticipante = listaParticipantes.get(indiceParticipanteAtual + 1).getEmail();
         Integer indiceParticipante = 0;
         Boolean jaFoiSorteado = false;
         
-        for (Object[] participante : listaParticipantesRecebedores) {
-        	if (!participante[1].equals(proximoParticipante) && indiceParticipante == 1
-        			|| participante[1].equals(proximoParticipante) && indiceSorteado == indiceParticipante) {
+        for (Participante participante : listaParticipantesRecebedores) {
+        	if (!participante.getEmail().equals(proximoParticipante) && indiceParticipante == 1
+        			|| participante.getEmail().equals(proximoParticipante) && indiceSorteado == indiceParticipante) {
         		jaFoiSorteado = true;
         		break;
 			}
@@ -129,4 +144,5 @@ public class Grupo {
         }
         return result;
     }
+    
 }
